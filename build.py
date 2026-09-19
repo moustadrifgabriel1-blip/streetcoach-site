@@ -271,4 +271,55 @@ page("compte-confirme.html",
   <p class="muted" style="max-width:32em;margin:20px auto 0">Ton compte StreetCoach est actif. Retourne dans l'application, puis connecte toi avec ton e-mail et ton mot de passe.</p>
 </div>
 """)
+# ------------------------------------------------- nouveau mot de passe
+page("nouveau-mot-de-passe.html",
+     "Nouveau mot de passe, StreetCoach",
+     "Choisis un nouveau mot de passe pour ton compte StreetCoach.",
+     """
+<article class="doc"><div class="wrap" style="max-width:460px">
+<span class="label">Compte</span>
+<h1>Nouveau mot de passe</h1>
+<p class="muted" id="intro">Choisis un nouveau mot de passe, d'au moins 8 caractères.</p>
+<form id="f" novalidate>
+  <label for="mdp" class="label" style="display:block;margin:24px 0 8px">Nouveau mot de passe</label>
+  <input id="mdp" type="password" autocomplete="new-password" minlength="8" required
+    style="width:100%;min-height:56px;padding:0 16px;border-radius:16px;border:1px solid var(--dim);background:var(--surface);color:var(--chalk);font:inherit">
+  <p id="msg" role="status" aria-live="polite" class="muted" style="min-height:1.6em;margin:12px 0"></p>
+  <button class="btn primary" type="submit" style="width:100%;justify-content:center;border:0">Enregistrer</button>
+</form>
+</div></article>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(function () {
+  var msg = document.getElementById('msg'), f = document.getElementById('f');
+  function dire(t, erreur) { msg.textContent = t; msg.style.color = erreur ? 'var(--flare)' : 'var(--mineral)'; }
+  var client = supabase.createClient('https://oyyoajcfwcirvpuszhbb.supabase.co',
+    'sb_publishable_O_bWbG8NCXR_03unPUk17g_slixbz-P');
+  // Le lien de l'e-mail ouvre cette page avec un jeton temporaire : sans lui,
+  // rien a faire ici.
+  var pret = false;
+  client.auth.onAuthStateChange(function (evenement, session) { if (session) pret = true; });
+  client.auth.getSession().then(function (r) {
+    if (r.data && r.data.session) pret = true;
+    if (!pret && location.hash.indexOf('access_token') < 0) {
+      f.hidden = true;
+      dire("Ce lien n'est plus valide. Redemande un e-mail depuis l'application : Profil, Compte en ligne, Mot de passe oublié.", true);
+    }
+  });
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var mdp = document.getElementById('mdp').value;
+    if (mdp.length < 8) { dire('Au moins 8 caractères.', true); return; }
+    dire('Enregistrement...');
+    client.auth.updateUser({ password: mdp }).then(function (r) {
+      if (r.error) { dire("Impossible d'enregistrer. Le lien a peut-être expiré, redemande un e-mail depuis l'application.", true); return; }
+      f.hidden = true;
+      document.getElementById('intro').textContent = '';
+      dire("C'est fait. Retourne dans l'application et connecte toi avec ton nouveau mot de passe.");
+      client.auth.signOut();
+    });
+  });
+})();
+</script>
+""")
 print("pages ecrites")
