@@ -2,7 +2,7 @@
 #   python3 build.py
 EMAIL = "moustadrifecomm@gmail.com"
 EDITEUR = "Gabriel Moustadrif"
-MAJ = "19 septembre 2026"
+MAJ = "20 septembre 2026"
 
 def page(fichier, titre, description, corps, accueil=False):
     p = "" if accueil else "index.html"
@@ -161,6 +161,7 @@ page("confidentialite.html",
 <h2>5. Sous-traitants et lieu d'hébergement</h2>
 <ul>
 <li><strong>Supabase</strong> (hébergement du compte et de la sauvegarde). Les données sont stockées dans un centre de données situé à Zurich, en Suisse.</li>
+<li><strong>Brevo</strong> (envoi des e-mails du compte : confirmation d'adresse, réinitialisation du mot de passe). Seule ton adresse e-mail lui est transmise, uniquement pour acheminer ces messages. Brevo est une société française, les données sont traitées dans l'Union européenne.</li>
 <li><strong>Apple iCloud</strong>. Si iCloud Drive est activé sur ton appareil, une copie de sauvegarde est placée dans ton propre espace iCloud. Elle relève de ton compte Apple, nous n'y avons pas accès.</li>
 </ul>
 
